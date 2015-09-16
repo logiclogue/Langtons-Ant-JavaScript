@@ -2,54 +2,57 @@
 
 
 var LangtonAnt = function () {
-	this.x = 0;
-	this.y = 0;
-	this.px = 0;
-	this.py = 0;
-	this.direction = 0;
+	var self = this;
+
+	self.x = 0;
+	self.y = 0;
+	self.px = 0;
+	self.py = 0;
+	self.direction = 0;
+
+	self.update = function (currentSquare) {
+		var preDirection = self.direction;
+
+		self.px = self.x;
+		self.py = self.y;
+
+		// update direction
+		// if current square is 'on'
+		if (currentSquare) {
+			// then turn ant left
+			self.direction = (preDirection < 1 ? 3 : preDirection - 1);
+		}
+		// if current square is 'off'
+		else {
+			// then turn ant right
+			self.direction = (preDirection > 2 ? 0 : preDirection + 1);
+		}
+
+		// update position
+		switch (self.direction) {
+			case 0: // up
+				self.y -= 1;
+				break;
+			case 1: // right
+				self.x += 1;
+				break;
+			case 2: // down
+				self.y += 1;
+				break;
+			case 3: // left
+				self.x -= 1;
+				break;
+		}
+
+		// return the value of the updated square
+		return !currentSquare;
+	};
 };
 
 
-function updateAnt(antObj, currentSquare) {
-	var preDirection = antObj.direction;
+function Array2D() {
+	//var this = this;
 
-	antObj.px = antObj.x;
-	antObj.py = antObj.y;
-
-	// update direction
-	// if current square is 'on'
-	if (currentSquare) {
-		// then turn ant left
-		antObj.direction = (preDirection < 1 ? 3 : preDirection - 1);
-	}
-	// if current square is 'off'
-	else {
-		// then turn ant left
-		antObj.direction = (preDirection > 2 ? 0 : preDirection + 1);
-	}
-
-	// update position
-	switch (antObj.direction) {
-		case 0: // up
-			antObj.y -= 1;
-			break;
-		case 1: // right
-			antObj.x += 1;
-			break;
-		case 2: // down
-			antObj.y += 1;
-			break;
-		case 3: // left
-			antObj.x -= 1;
-			break;
-	}
-
-	// return the value of the updated square
-	return !currentSquare;
-}
-
-
-function array2D() {
 	var arrayMain = [];
 
 
@@ -82,19 +85,20 @@ function array2D() {
 	var canvas = document.getElementById("cnvsMain");
 	var ctx = canvas.getContext("2d");
 
-	var universe = new array2D();
+	var universe = new Array2D();
 	var ant = new LangtonAnt();
 	ant.x = 10;
 	ant.y = 10;
 
-
 	setInterval(function () {
-		ctx.fillStyle = (universe.get(ant.px, ant.py) ? "#000000" : "#FFFFFF");
-		ctx.fillRect(ant.px * 10 + 100, ant.py * 10 + 100, 10, 10);
+		for (var i = 0; i < 1; i += 1) {
+			ctx.fillStyle = (universe.get(ant.px, ant.py) ? "#000000" : "#FFFFFF");
+			ctx.fillRect(ant.px * 10 + 100, ant.py * 10 + 100, 10, 10);
 
-		ctx.fillStyle = "#00FF00";
-		ctx.fillRect(ant.x * 10 + 100, ant.y * 10 + 100, 10, 10);
+			ctx.fillStyle = "#00FF00";
+			ctx.fillRect(ant.x * 10 + 100, ant.y * 10 + 100, 10, 10);
 
-		universe.set(ant.x, ant.y, updateAnt(ant, universe.get(ant.x, ant.y)));
+			universe.set(ant.x, ant.y, ant.update(universe.get(ant.x, ant.y)));
+		}
 	}, 1);
 }());
