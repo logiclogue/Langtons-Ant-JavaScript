@@ -26,6 +26,6 @@ var LangtonCanvas = function () {
 
 	self.draw = function (x, y, thingToDraw) {
 		ctx.fillStyle = self.colour[thingToDraw];
-		ctx.fillRect(x * self.scale + (canvas.width / 2) - (self.scale / 2), y * self.scale + (canvas.height / 2) - (self.scale / 2), self.scale, self.scale);
+		ctx.fillRect(Math.round(x * self.scale + (canvas.width / 2) - (self.scale / 2)), Math.round(y * self.scale + (canvas.height / 2) - (self.scale / 2)), Math.round(self.scale), Math.round(self.scale));
 	};
 };
