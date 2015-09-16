@@ -49,18 +49,32 @@ function updateAnt(antObj, currentSquare) {
 }
 
 
-function array2D(width, height) {
-	var returnArray = [];
+function array2D() {
+	var arrayMain = [];
 
-	for (var x = 0; x < width; x++) {
-		returnArray[x] = [];
 
-		for (var y = 0; y < height; y++) {
-			returnArray[x][y] = false;
+	function updateElement(x, y) {
+		if (!arrayMain[x]) {
+			arrayMain[x] = [];
+		}
+
+		if (!arrayMain[x][y]) {
+			arrayMain[x][y] = false;
 		}
 	}
 
-	return returnArray;
+
+	this.get = function (x, y) {
+		updateElement(x, y);
+
+		return arrayMain[x][y];
+	};
+
+	this.set = function (x, y, value) {
+		updateElement(x, y);
+
+		arrayMain[x][y] = value;
+	};
 }
 
 
@@ -68,18 +82,19 @@ function array2D(width, height) {
 	var canvas = document.getElementById("cnvsMain");
 	var ctx = canvas.getContext("2d");
 
-	var universe = array2D(100, 100);
+	var universe = new array2D();
 	var ant = new LangtonAnt();
 	ant.x = 10;
 	ant.y = 10;
 
+
 	setInterval(function () {
-		ctx.fillStyle = (universe[ant.px][ant.py] ? "#000000" : "#FFFFFF");
-		ctx.fillRect(ant.px * 10, ant.py * 10, 10, 10);
+		ctx.fillStyle = (universe.get(ant.px, ant.py) ? "#000000" : "#FFFFFF");
+		ctx.fillRect(ant.px * 10 + 100, ant.py * 10 + 100, 10, 10);
 
 		ctx.fillStyle = "#00FF00";
-		ctx.fillRect(ant.x * 10, ant.y * 10, 10, 10);
+		ctx.fillRect(ant.x * 10 + 100, ant.y * 10 + 100, 10, 10);
 
-		universe[ant.x][ant.y] = updateAnt(ant, universe[ant.x][ant.y]);
+		universe.set(ant.x, ant.y, updateAnt(ant, universe.get(ant.x, ant.y)));
 	}, 1);
 }());
