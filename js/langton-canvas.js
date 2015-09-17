@@ -20,6 +20,9 @@ var LangtonCanvas = function () {
 		canvas = document.getElementById(canvasId);
 		ctx = canvas.getContext("2d");
 
+		canvas.width = document.body.clientWidth;
+		canvas.height = document.body.clientHeight;
+
 		width = canvas.width;
 		height = canvas.height;
 	};
