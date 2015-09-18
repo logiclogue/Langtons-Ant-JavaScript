@@ -6,18 +6,20 @@
 	var universe = new Array2D();
 	var paint = new LangtonCanvas();
 	var speed = 1000;
+	var numberOfAnts = 32;
 
-	for (var i = 0; i < 10; i += 1) {
+	for (var i = 0; i < numberOfAnts; i += 1) {
 		var ant = new LangtonAnt();
 
-		ant.x = Math.round((Math.random() - 5) * 10);
-		ant.y = Math.round((Math.random() - 5) * 10);
+		ant.x = Math.round((Math.random() * numberOfAnts) - (numberOfAnts / 2));
+		ant.y = Math.round((Math.random() * numberOfAnts) - (numberOfAnts / 2));
 
 		ants.push(ant);
 	}
 
 	paint.setCanvas("cnvsMain");
-	paint.scale = 1;
+	paint.scale = 10;
+	paint.colour.OFF = "#FAFAAA";
 
 
 	setInterval(function () {
