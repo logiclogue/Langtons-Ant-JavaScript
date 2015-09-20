@@ -1,27 +1,24 @@
 function Array2D() {
-	var arrayMain = [];
+	var self = this;
+	self.arrayMain = [];
 
 
 	function updateElement(x, y) {
-		if (!arrayMain[x]) {
-			arrayMain[x] = [];
-		}
-
-		if (!arrayMain[x][y]) {
-			arrayMain[x][y] = false;
+		if (!self.arrayMain[x]) {
+			self.arrayMain[x] = [];
 		}
 	}
 
 
-	this.get = function (x, y) {
+	self.get = function (x, y) {
 		updateElement(x, y);
 
-		return arrayMain[x][y];
+		return self.arrayMain[x][y];
 	};
 
-	this.set = function (x, y, value) {
+	self.set = function (x, y, value) {
 		updateElement(x, y);
 
-		arrayMain[x][y] = value;
+		self.arrayMain[x][y] = value;
 	};
 }

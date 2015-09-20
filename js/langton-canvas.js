@@ -5,6 +5,7 @@ var LangtonCanvas = function () {
 	var ctx;
 	var width;
 	var height;
+	var imgData;
 	
 	self.pos_x = 0;
 	self.pos_y = 0;
@@ -20,37 +21,60 @@ var LangtonCanvas = function () {
 		canvas = document.getElementById(canvasId);
 		ctx = canvas.getContext("2d");
 
-		canvas.width = document.body.clientWidth;
-		canvas.height = document.body.clientHeight;
+		canvas.width = document.body.clientWidth / 4;
+		canvas.height = document.body.clientHeight / 4;
 
 		width = canvas.width;
 		height = canvas.height;
+
+		imgData = ctx.createImageData(width, height);
 	};
 
 	self.draw = function (x, y, thingToDraw) {
 		ctx.fillStyle = self.colour[thingToDraw];
-		ctx.fillRect(Math.round((x + self.pos_x) * self.scale + (width / 2) - (self.scale / 2)), Math.round((y + self.pos_y) * self.scale + (height / 2) - (self.scale / 2)), Math.ceil(self.scale), Math.ceil(self.scale));
+		ctx.fillRect(
+			Math.round((x + self.pos_x) * self.scale + (width / 2) - (self.scale / 2)),
+			Math.round((y + self.pos_y) * self.scale + (height / 2) - (self.scale / 2)),
+			Math.ceil(self.scale),
+			Math.ceil(self.scale)
+		);
 	};
 
 	self.redraw = function () {
-		var xPixelNum = Math.ceil(width / self.scale) + 2;
-		var yPixelNum = Math.ceil(height / self.scale) + 2;
+		var halfWidth = width / 2;
+		var halfHeight = height / 2;
+		var oneScale = 1 / self.scale;
 
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		for (var x = 0; x < width; x++) {
+			for (var y = 0; y < height; y++) {
+				var i = ((width * y) + x) * 4;
 
-		for (var x = 0; x < xPixelNum; x++) {
-			for (var y = 0; y < yPixelNum; y++) {
-				var currentX = Math.floor(x - (xPixelNum / 2) - self.pos_x);
-				var currentY = Math.floor(y - (yPixelNum / 2) - self.pos_y);
-				var currentPixel = universe.get(currentX, currentY);
+				var currentSquareX = Math.round((x - halfWidth - 1) * oneScale) - self.pos_x;
+				var currentSquareY = Math.round((y - halfHeight - 1) * oneScale) - self.pos_y;
+				var col = 0;
 
-				if (currentPixel) {
-					self.draw(currentX, currentY, "ON");
+				switch (universe.get(currentSquareX, currentSquareY)) {
+					case true:
+						col = 0;
+						break;
+					case false:
+						col = 127;
+						break;
+					default:
+						col = 255;
+						break;
 				}
+
+				imgData.data[i+0] = col;
+				imgData.data[i+1] = col;
+				imgData.data[i+2] = col;
+				imgData.data[i+3] = 255;
 			}
 		}
-		console.log(self.pos_x);
+
+		ctx.putImageData(imgData, 0, 0);
 	};
+
 
 	document.addEventListener("keydown", function(e) {
 		var boolKeyPressed = true;
@@ -63,16 +87,16 @@ var LangtonCanvas = function () {
 				self.scale = self.scale * 2;
 				break;
 			case 37: // left
-				self.pos_x += 100 / self.scale;
+				self.pos_x += 5;
 				break;
 			case 39: // right
-				self.pos_x -= 100 / self.scale;
+				self.pos_x -= 5;
 				break;
 			case 38: // up
-				self.pos_y += 100 / self.scale;
+				self.pos_y += 5;
 				break;
 			case 40: // down
-				self.pos_y -= 100 / self.scale;
+				self.pos_y -= 5;
 				break;
 			default:
 				boolKeyPressed = false;
