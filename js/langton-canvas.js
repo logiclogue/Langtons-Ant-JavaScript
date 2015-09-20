@@ -29,11 +29,29 @@ var LangtonCanvas = function () {
 
 	self.draw = function (x, y, thingToDraw) {
 		ctx.fillStyle = self.colour[thingToDraw];
-		ctx.fillRect(Math.round((x + self.pos_x) * self.scale + (canvas.width / 2) - (self.scale / 2)), Math.round((y + self.pos_y) * self.scale + (canvas.height / 2) - (self.scale / 2)), Math.ceil(self.scale), Math.ceil(self.scale));
+		ctx.fillRect(Math.round((x + self.pos_x) * self.scale + (width / 2) - (self.scale / 2)), Math.round((y + self.pos_y) * self.scale + (height / 2) - (self.scale / 2)), Math.ceil(self.scale), Math.ceil(self.scale));
 	};
 
 	self.redraw = function () {
+		var xPixelNum = Math.ceil(width / self.scale) + 1;
+		var yPixelNum = Math.ceil(height / self.scale) + 1;
+
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+		for (var x = 0; x < xPixelNum; x++) {
+			for (var y = 0; y < yPixelNum; y++) {
+				var currentX = x - Math.floor(xPixelNum / 2);
+				var currentY = y - Math.floor(yPixelNum / 2);
+				var currentPixel = universe.get(currentX, currentY);
+
+				if (currentPixel) {
+					self.draw(currentX, currentY, "ON");
+				}
+				else if (currentPixel === false) {
+					self.draw(currentX, currentY, "OFF");
+				}
+			}
+		}
 	};
 
 	document.addEventListener("keydown", function(e) {

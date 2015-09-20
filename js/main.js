@@ -1,9 +1,9 @@
 // Jordan Lord
 
+var universe = new Array2D();
 
 (function () {
 	var ants = [];
-	var universe = new Array2D();
 	var paint = new LangtonCanvas();
 	var speed = 1000;
 	var numberOfAnts = 32;
