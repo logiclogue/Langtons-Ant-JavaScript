@@ -33,25 +33,23 @@ var LangtonCanvas = function () {
 	};
 
 	self.redraw = function () {
-		var xPixelNum = Math.ceil(width / self.scale) + 1;
-		var yPixelNum = Math.ceil(height / self.scale) + 1;
+		var xPixelNum = Math.ceil(width / self.scale) + 2;
+		var yPixelNum = Math.ceil(height / self.scale) + 2;
 
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 		for (var x = 0; x < xPixelNum; x++) {
 			for (var y = 0; y < yPixelNum; y++) {
-				var currentX = x - Math.floor(xPixelNum / 2);
-				var currentY = y - Math.floor(yPixelNum / 2);
+				var currentX = Math.floor(x - (xPixelNum / 2) - self.pos_x);
+				var currentY = Math.floor(y - (yPixelNum / 2) - self.pos_y);
 				var currentPixel = universe.get(currentX, currentY);
 
 				if (currentPixel) {
 					self.draw(currentX, currentY, "ON");
 				}
-				else if (currentPixel === false) {
-					self.draw(currentX, currentY, "OFF");
-				}
 			}
 		}
+		console.log(self.pos_x);
 	};
 
 	document.addEventListener("keydown", function(e) {
