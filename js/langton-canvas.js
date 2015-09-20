@@ -21,8 +21,8 @@ var LangtonCanvas = function () {
 		canvas = document.getElementById(canvasId);
 		ctx = canvas.getContext("2d");
 
-		canvas.width = document.body.clientWidth / 4;
-		canvas.height = document.body.clientHeight / 4;
+		canvas.width = document.body.clientWidth / 2;
+		canvas.height = document.body.clientHeight / 2;
 
 		width = canvas.width;
 		height = canvas.height;
@@ -49,8 +49,8 @@ var LangtonCanvas = function () {
 			for (var y = 0; y < height; y++) {
 				var i = ((width * y) + x) * 4;
 
-				var currentSquareX = Math.round((x - halfWidth - 1) * oneScale) - self.pos_x;
-				var currentSquareY = Math.round((y - halfHeight - 1) * oneScale) - self.pos_y;
+				var currentSquareX = Math.round((x - halfWidth) * oneScale) - self.pos_x;
+				var currentSquareY = Math.round((y - halfHeight) * oneScale) - self.pos_y;
 				var colR = 0;
 				var colG = 0;
 				var colB = 0;
