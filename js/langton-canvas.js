@@ -51,23 +51,26 @@ var LangtonCanvas = function () {
 
 				var currentSquareX = Math.round((x - halfWidth - 1) * oneScale) - self.pos_x;
 				var currentSquareY = Math.round((y - halfHeight - 1) * oneScale) - self.pos_y;
-				var col = 0;
+				var colR = 0;
+				var colG = 0;
+				var colB = 0;
 
 				switch (universe.get(currentSquareX, currentSquareY)) {
 					case true:
-						col = 0;
 						break;
 					case false:
-						col = 127;
+						colR = 250;
+						colG = 250;
+						colB = 170;
 						break;
 					default:
-						col = 255;
+						colR = colG = colB = 255;
 						break;
 				}
 
-				imgData.data[i+0] = col;
-				imgData.data[i+1] = col;
-				imgData.data[i+2] = col;
+				imgData.data[i+0] = colR;
+				imgData.data[i+1] = colG;
+				imgData.data[i+2] = colB;
 				imgData.data[i+3] = 255;
 			}
 		}
