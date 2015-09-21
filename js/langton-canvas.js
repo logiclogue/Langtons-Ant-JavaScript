@@ -67,9 +67,8 @@ var LangtonCanvas = function () {
 		for (var x = 0; x < width; x++) {
 			for (var y = 0; y < height; y++) {
 				var i = ((width * y) + x) * 4;
-
-				var currentSquareX = Math.round((x - halfWidth) * oneScale) - self.pos_x;
-				var currentSquareY = Math.round((y - halfHeight) * oneScale) - self.pos_y;
+				var currentSquareX = pixelToSquare(x, self.pos_x, halfWidth, oneScale);
+				var currentSquareY = pixelToSquare(y, self.pos_y, halfHeight, oneScale);
 				var col = [];
 
 				switch (universe.get(currentSquareX, currentSquareY)) {
@@ -127,11 +126,10 @@ var LangtonCanvas = function () {
 		}
 	});
 
+	// click to move around	
 	document.addEventListener("click", function (e) {
 		self.pos_x = -pixelToSquare(e.pageX, self.pos_x, width / 2, 1 / self.scale);
 		self.pos_y = -pixelToSquare(e.pageY, self.pos_y, height / 2, 1 / self.scale);
-
-		console.log(self.pos_x);
 
 		self.redraw();
 	});
