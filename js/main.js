@@ -17,7 +17,7 @@ var universe = new Array2D();
 
 		ants.push(ant);
 	}
-	
+
 	paint.setCanvas("cnvsMain");
 	paint.scale = 5;
 

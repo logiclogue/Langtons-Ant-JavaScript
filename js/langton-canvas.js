@@ -22,6 +22,10 @@ var LangtonCanvas = function () {
 		return [parseInt(hexCol.substring(1, 3), 16), parseInt(hexCol.substring(3, 5), 16), parseInt(hexCol.substring(5, 7), 16)];
 	}
 
+	function pixelToSquare(coord, actCoord, halfLength, theScale) {
+		return Math.round((coord - halfLength) * theScale) - actCoord;
+	}
+
 
 	self.setCanvas = function (canvasId) {
 		canvas = document.getElementById(canvasId);
@@ -91,7 +95,7 @@ var LangtonCanvas = function () {
 	};
 
 
-	document.addEventListener("keydown", function(e) {
+	document.addEventListener("keydown", function (e) {
 		var boolKeyPressed = true;
 
 		switch (e.keyCode) {
@@ -121,5 +125,14 @@ var LangtonCanvas = function () {
 		if (boolKeyPressed) {
 			self.redraw();
 		}
+	});
+
+	document.addEventListener("click", function (e) {
+		self.pos_x = -pixelToSquare(e.pageX, self.pos_x, width / 2, 1 / self.scale);
+		self.pos_y = -pixelToSquare(e.pageY, self.pos_y, height / 2, 1 / self.scale);
+
+		console.log(self.pos_x);
+
+		self.redraw();
 	});
 };
