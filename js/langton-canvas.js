@@ -10,6 +10,7 @@ var LangtonCanvas = function () {
 	self.pos_x = 0;
 	self.pos_y = 0;
 	self.scale = 10;
+	self.resolution = 1;
 	self.colour = {
 		ANT: "#00FF00",
 		OFF: "#FAFAAA",
@@ -31,8 +32,8 @@ var LangtonCanvas = function () {
 		canvas = document.getElementById(canvasId);
 		ctx = canvas.getContext("2d");
 
-		canvas.width = document.body.clientWidth;
-		canvas.height = document.body.clientHeight;
+		canvas.width = document.body.clientWidth / self.resolution;
+		canvas.height = document.body.clientHeight / self.resolution;
 
 		width = canvas.width;
 		height = canvas.height;
@@ -128,8 +129,8 @@ var LangtonCanvas = function () {
 
 	// click to move around	
 	document.addEventListener("click", function (e) {
-		self.pos_x = -pixelToSquare(e.pageX, self.pos_x, width / 2, 1 / self.scale);
-		self.pos_y = -pixelToSquare(e.pageY, self.pos_y, height / 2, 1 / self.scale);
+		self.pos_x = -pixelToSquare(e.pageX / self.resolution, self.pos_x, width / 2, 1 / self.scale);
+		self.pos_y = -pixelToSquare(e.pageY / self.resolution, self.pos_y, height / 2, 1 / self.scale);
 
 		self.redraw();
 	});
