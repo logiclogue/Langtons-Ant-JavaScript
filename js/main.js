@@ -7,6 +7,7 @@ var universe = new Array2D();
 	var paint = new LangtonCanvas();
 	var speed = 100000;
 	var numberOfAnts = 32;
+	var steps = 0;
 
 	for (var i = 0; i < numberOfAnts; i += 1) {
 		var ant = new LangtonAnt();
@@ -16,10 +17,9 @@ var universe = new Array2D();
 
 		ants.push(ant);
 	}
-
+	
 	paint.setCanvas("cnvsMain");
 	paint.scale = 5;
-	paint.colour.OFF = "#FAFAAA";
 
 
 	setInterval(function () {
@@ -30,6 +30,7 @@ var universe = new Array2D();
 
 				universe.set(ants[j].x, ants[j].y, ants[j].update(universe.get(ants[j].x, ants[j].y)));
 			}
+			steps += 1;
 		}
 	}, 1000 / speed);
 }());

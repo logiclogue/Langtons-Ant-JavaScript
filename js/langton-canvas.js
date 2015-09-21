@@ -12,22 +12,32 @@ var LangtonCanvas = function () {
 	self.scale = 10;
 	self.colour = {
 		ANT: "#00FF00",
-		OFF: "#FFFFFF",
-		ON: "#000000"
+		OFF: "#FAFAAA",
+		ON: "#000000",
+		BACKGROUND: "#FFFFFF"
 	};
+
+
+	function hexToRGB(hexCol) {
+		return [parseInt(hexCol.substring(1, 3), 16), parseInt(hexCol.substring(3, 5), 16), parseInt(hexCol.substring(5, 7), 16)];
+	}
 
 
 	self.setCanvas = function (canvasId) {
 		canvas = document.getElementById(canvasId);
 		ctx = canvas.getContext("2d");
 
-		canvas.width = document.body.clientWidth / 2;
-		canvas.height = document.body.clientHeight / 2;
+		canvas.width = document.body.clientWidth;
+		canvas.height = document.body.clientHeight;
 
 		width = canvas.width;
 		height = canvas.height;
 
 		imgData = ctx.createImageData(width, height);
+
+		// initially draw correct background colour
+		ctx.fillStyle = self.colour.BACKGROUND;
+		ctx.fillRect(0, 0, width, height);
 	};
 
 	self.draw = function (x, y, thingToDraw) {
@@ -44,6 +54,11 @@ var LangtonCanvas = function () {
 		var halfWidth = width / 2;
 		var halfHeight = height / 2;
 		var oneScale = 1 / self.scale;
+		var localColours = {};
+
+		for (var i in self.colour) {
+			localColours[i] = hexToRGB(self.colour[i]);
+		}
 
 		for (var x = 0; x < width; x++) {
 			for (var y = 0; y < height; y++) {
@@ -51,26 +66,23 @@ var LangtonCanvas = function () {
 
 				var currentSquareX = Math.round((x - halfWidth) * oneScale) - self.pos_x;
 				var currentSquareY = Math.round((y - halfHeight) * oneScale) - self.pos_y;
-				var colR = 0;
-				var colG = 0;
-				var colB = 0;
+				var col = [];
 
 				switch (universe.get(currentSquareX, currentSquareY)) {
 					case true:
+						col = localColours.ON;
 						break;
 					case false:
-						colR = 250;
-						colG = 250;
-						colB = 170;
+						col = localColours.OFF;
 						break;
 					default:
-						colR = colG = colB = 255;
+						col = localColours.BACKGROUND;
 						break;
 				}
 
-				imgData.data[i+0] = colR;
-				imgData.data[i+1] = colG;
-				imgData.data[i+2] = colB;
+				imgData.data[i+0] = col[0];
+				imgData.data[i+1] = col[1];
+				imgData.data[i+2] = col[2];
 				imgData.data[i+3] = 255;
 			}
 		}
