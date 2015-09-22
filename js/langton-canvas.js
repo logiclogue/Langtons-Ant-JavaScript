@@ -134,4 +134,12 @@ var LangtonCanvas = function () {
 
 		self.redraw();
 	});
+
+	// touch to move around
+	document.addEventListener("touchstart", function (e) {
+		self.pos_x = -pixelToSquare(e.changedTouches[0].pageX / self.resolution, self.pos_x, width / 2, 1 / self.scale);
+		self.pos_y = -pixelToSquare(e.changedTouches[0].pageY / self.resolution, self.pos_x, width / 2, 1 / self.scale);
+
+		self.redraw();
+	});
 };
