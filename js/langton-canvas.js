@@ -1,22 +1,32 @@
-var LangtonCanvas = function () {
-	var self = this;
+var LangtonCanvas = (function () {
+	function LangtonCanvas() {
+		var self = this;
 
-	var canvas;
-	var ctx;
-	var width;
-	var height;
-	var imgData;
-	
-	self.pos_x = 0;
-	self.pos_y = 0;
-	self.scale = 10;
-	self.resolution = 1;
-	self.colour = {
-		ANT: "#00FF00",
-		OFF: "#FAFAAA",
-		ON: "#000000",
-		BACKGROUND: "#FFFFFF"
-	};
+		this.canvas;
+		this.ctx;
+		this.width;
+		this.height;
+		this.imgData;
+
+		this.pos_x = 0;
+		this.pos_y = 0;
+		this.scale = 10;
+		this.resolution = 1;
+		this.colour = {
+			ANT: "#00FF00",
+			OFF: "#FAFAAA",
+			ON: "#000000",
+			BACKGROUND: "#FFFFFF"
+		};
+
+		document.addEventListener("keydown", function (e) { keydown.call(self, e) });
+
+		// click to move around	
+		document.addEventListener("click", function (e) { click.call(self, e) });
+
+		// touch to move around
+		document.addEventListener("touchstart", function (e) { touchstart.call(self, e) });
+	}
 
 
 	function hexToRGB(hexCol) {
@@ -27,49 +37,95 @@ var LangtonCanvas = function () {
 		return Math.round((coord - halfLength) * theScale) - actCoord;
 	}
 
+	function keydown(e) {
+		var boolKeyPressed = true;
 
-	self.setCanvas = function (canvasId) {
-		canvas = document.getElementById(canvasId);
-		ctx = canvas.getContext("2d");
+		switch (e.keyCode) {
+			case 189: // zoom out
+				this.scale = this.scale / 2;
+				break;
+			case 187: // zoom in
+				this.scale = this.scale * 2;
+				break;
+			case 37: // left
+				this.pos_x += 5;
+				break;
+			case 39: // right
+				this.pos_x -= 5;
+				break;
+			case 38: // up
+				this.pos_y += 5;
+				break;
+			case 40: // down
+				this.pos_y -= 5;
+				break;
+			default:
+				boolKeyPressed = false;
+				break;
+		}
 
-		canvas.width = document.body.clientWidth / self.resolution;
-		canvas.height = document.body.clientHeight / self.resolution;
+		if (boolKeyPressed) {
+			this.redraw();
+		}
+	}
 
-		width = canvas.width;
-		height = canvas.height;
+	function click(e) {
+		this.pos_x = -pixelToSquare(e.pageX / this.resolution, this.pos_x, this.width / 2, 1 / this.scale);
+		this.pos_y = -pixelToSquare(e.pageY / this.resolution, this.pos_y, this.height / 2, 1 / this.scale);
 
-		imgData = ctx.createImageData(width, height);
+		this.redraw();
+	}
+
+	function touchstart(e) {
+		this.pos_x = -pixelToSquare(e.changedTouches[0].pageX / this.resolution, this.pos_x, this.width / 2, 1 / this.scale);
+		this.pos_y = -pixelToSquare(e.changedTouches[0].pageY / this.resolution, this.pos_x, this.width / 2, 1 / this.scale);
+
+		this.redraw();
+	}
+
+
+	LangtonCanvas.prototype.setCanvas = function (canvasId) {
+		this.canvas = document.getElementById(canvasId);
+		this.ctx = this.canvas.getContext("2d");
+
+		this.canvas.width = document.body.clientWidth / this.resolution;
+		this.canvas.height = document.body.clientHeight / this.resolution;
+
+		this.width = this.canvas.width;
+		this.height = this.canvas.height;
+
+		this.imgData = this.ctx.createImageData(this.width, this.height);
 
 		// initially draw correct background colour
-		ctx.fillStyle = self.colour.BACKGROUND;
-		ctx.fillRect(0, 0, width, height);
+		this.ctx.fillStyle = this.colour.BACKGROUND;
+		this.ctx.fillRect(0, 0, this.width, this.height);
 	};
 
-	self.draw = function (x, y, thingToDraw) {
-		ctx.fillStyle = self.colour[thingToDraw];
-		ctx.fillRect(
-			Math.round((x + self.pos_x) * self.scale + (width / 2) - (self.scale / 2)),
-			Math.round((y + self.pos_y) * self.scale + (height / 2) - (self.scale / 2)),
-			Math.ceil(self.scale),
-			Math.ceil(self.scale)
+	LangtonCanvas.prototype.draw = function (x, y, thingToDraw) {
+		this.ctx.fillStyle = this.colour[thingToDraw];
+		this.ctx.fillRect(
+			Math.round((x + this.pos_x) * this.scale + (this.width / 2) - (this.scale / 2)),
+			Math.round((y + this.pos_y) * this.scale + (this.height / 2) - (this.scale / 2)),
+			Math.ceil(this.scale),
+			Math.ceil(this.scale)
 		);
 	};
 
-	self.redraw = function () {
-		var halfWidth = width / 2;
-		var halfHeight = height / 2;
-		var oneScale = 1 / self.scale;
+	LangtonCanvas.prototype.redraw = function () {
+		var halfWidth = this.width / 2;
+		var halfHeight = this.height / 2;
+		var oneScale = 1 / this.scale;
 		var localColours = {};
 
-		for (var i in self.colour) {
-			localColours[i] = hexToRGB(self.colour[i]);
+		for (var i in this.colour) {
+			localColours[i] = hexToRGB(this.colour[i]);
 		}
 
-		for (var x = 0; x < width; x++) {
-			for (var y = 0; y < height; y++) {
-				var i = ((width * y) + x) * 4;
-				var currentSquareX = pixelToSquare(x, self.pos_x, halfWidth, oneScale);
-				var currentSquareY = pixelToSquare(y, self.pos_y, halfHeight, oneScale);
+		for (var x = 0, maxX = this.width; x < maxX; x++) {
+			for (var y = 0, maxY = this.height; y < maxY; y++) {
+				var i = ((this.width * y) + x) * 4;
+				var currentSquareX = pixelToSquare(x, this.pos_x, halfWidth, oneScale);
+				var currentSquareY = pixelToSquare(y, this.pos_y, halfHeight, oneScale);
 				var col = [];
 
 				switch (universe.get(currentSquareX, currentSquareY)) {
@@ -84,62 +140,16 @@ var LangtonCanvas = function () {
 						break;
 				}
 
-				imgData.data[i+0] = col[0];
-				imgData.data[i+1] = col[1];
-				imgData.data[i+2] = col[2];
-				imgData.data[i+3] = 255;
+				this.imgData.data[i+0] = col[0];
+				this.imgData.data[i+1] = col[1];
+				this.imgData.data[i+2] = col[2];
+				this.imgData.data[i+3] = 255;
 			}
 		}
 
-		ctx.putImageData(imgData, 0, 0);
+		this.ctx.putImageData(this.imgData, 0, 0);
 	};
 
 
-	document.addEventListener("keydown", function (e) {
-		var boolKeyPressed = true;
-
-		switch (e.keyCode) {
-			case 189: // zoom out
-				self.scale = self.scale / 2;
-				break;
-			case 187: // zoom in
-				self.scale = self.scale * 2;
-				break;
-			case 37: // left
-				self.pos_x += 5;
-				break;
-			case 39: // right
-				self.pos_x -= 5;
-				break;
-			case 38: // up
-				self.pos_y += 5;
-				break;
-			case 40: // down
-				self.pos_y -= 5;
-				break;
-			default:
-				boolKeyPressed = false;
-				break;
-		}
-
-		if (boolKeyPressed) {
-			self.redraw();
-		}
-	});
-
-	// click to move around	
-	document.addEventListener("click", function (e) {
-		self.pos_x = -pixelToSquare(e.pageX / self.resolution, self.pos_x, width / 2, 1 / self.scale);
-		self.pos_y = -pixelToSquare(e.pageY / self.resolution, self.pos_y, height / 2, 1 / self.scale);
-
-		self.redraw();
-	});
-
-	// touch to move around
-	document.addEventListener("touchstart", function (e) {
-		self.pos_x = -pixelToSquare(e.changedTouches[0].pageX / self.resolution, self.pos_x, width / 2, 1 / self.scale);
-		self.pos_y = -pixelToSquare(e.changedTouches[0].pageY / self.resolution, self.pos_x, width / 2, 1 / self.scale);
-
-		self.redraw();
-	});
-};
+	return LangtonCanvas;
+}());
