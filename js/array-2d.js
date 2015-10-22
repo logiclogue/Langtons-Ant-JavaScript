@@ -1,24 +1,28 @@
-function Array2D() {
-	var self = this;
-	self.arrayMain = [];
+var Array2D = (function () {
+	function Array2D() {
+		this.arrayMain = [];
+	}
 
 
 	function updateElement(x, y) {
-		if (!self.arrayMain[x]) {
-			self.arrayMain[x] = [];
+		if (!this.arrayMain[x]) {
+			this.arrayMain[x] = [];
 		}
 	}
 
 
-	self.get = function (x, y) {
-		updateElement(x, y);
+	Array2D.prototype.get = function (x, y) {
+		updateElement.call(this, x, y);
 
-		return self.arrayMain[x][y];
+		return this.arrayMain[x][y];
 	};
 
-	self.set = function (x, y, value) {
-		updateElement(x, y);
+	Array2D.prototype.set = function (x, y, value) {
+		updateElement.call(this, x, y);
 
-		self.arrayMain[x][y] = value;
+		this.arrayMain[x][y] = value;
 	};
-}
+
+
+	return Array2D;
+}());
