@@ -1,7 +1,17 @@
-#Langton's Ant JavaScript
+# Langton's Ant JavaScript
+
 Langton's Ant implemented in JavaScript using HTML5 canvas element.
 
-###Controls
+## Controls
+
 - `+` key to zoom in
 - `-` key to zoom out
-- click location to move there
+- Click location to move there
+
+## Author
+
+Jordan Lord
+
+## License
+
+GNU General Public License v3.0
